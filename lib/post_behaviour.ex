@@ -3,5 +3,5 @@ defmodule ApolloIo.PostBehaviour do
   Common behaviour for different modules. Used by Mox.
   """
 
-  @callback post_request(binary | map) :: {:ok, map()} | {:error, map()}
+  @callback post_request(binary, binary | map) :: {:ok, map()} | {:error, map()}
 end

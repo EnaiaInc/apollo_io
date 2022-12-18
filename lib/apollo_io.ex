@@ -13,7 +13,7 @@ defmodule ApolloIo do
   usage:
   ApolloIo.people_enrich(%{first_name: "James", last_name: "Cameroon"}) ==
   """
-  defdelegate people_enrich(opts), to: ApolloIo.PeopleEnrichment
+  defdelegate people_enrich(api_key, opts), to: ApolloIo.PeopleEnrichment
 
   @doc """
   This endpoint enriches a company with info such as industry, company size, etc. based on the domain parameter passed in.
@@ -21,7 +21,7 @@ defmodule ApolloIo do
   usage:
   ApolloIo.organization_enrich("patagonia.com") ==
   """
-  defdelegate organization_enrich(domain), to: ApolloIo.OrganizationEnrichment
+  defdelegate organization_enrich(api_key, domain), to: ApolloIo.OrganizationEnrichment
 
   @doc """
   This endpoint searches for people. Calls to the search endpoint do not cost you credits. They also do not return any email information. To get email information, use the "enrich" endpoint.
@@ -33,5 +33,5 @@ defmodule ApolloIo do
                page: 1
              })
   """
-  defdelegate search(opts), to: ApolloIo.Search
+  defdelegate search(api_key, opts), to: ApolloIo.Search
 end

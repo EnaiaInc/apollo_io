@@ -14,9 +14,4 @@ defmodule ApolloIo.Config do
   Fetch the current API version to use.
   """
   def version, do: @current_version
-
-  @doc """
-  Fetch the current API key to use.
-  """
-  def api_key, do: System.get_env("APOLLO_IO_API_KEY")
 end

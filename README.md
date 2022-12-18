@@ -15,7 +15,26 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/apollo_io>.
+## Usage
+No additional configuration is needed.
+Pass your api_key on every request:
 
+```elixir
+AppoloIo.people_enrich("you_api_key", %{email: "email@domain.com"})
+AppoloIo.organization_enrich("you_api_key", "some.domain.com")
+AppoloIo.search("you_api_key", %{person_titles: ["sales director"]})
+```
+
+Supported params for `people_enrich` are:
+  - first_name (optional)
+  - last_name (optional)
+  - name (optional)
+  - email (optional)
+  - organization_name (optional)
+  - domain (optional)
+  - id (optional)
+
+Supported params for `organization_enrich` are:
+  - person_titles (options) - list os titles
+  - q_organization_domains (optional) - list of domains
+  - page (optional) - integer

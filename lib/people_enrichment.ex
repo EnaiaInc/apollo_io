@@ -3,11 +3,16 @@ defmodule ApolloIo.PeopleEnrichment do
   Documentation for `ApolloIo.PeopleEnrichment`.
   """
   alias ApolloIo.PostBehaviour
-  @service Confex.get_env(:apollo_io, :people_client)
+
+  @service (if Mix.env() == :test do
+              ApolloIo.PeopleEnrichmentMock
+            else
+              ApolloIo.PeopleEnrichment
+            end)
 
   @people_match_url "/people/match"
 
-  def people_enrich(opts), do: @service.post_request(opts)
+  def people_enrich(api_key, opts), do: @service.post_request(api_key, opts)
 
   @doc """
   Query the endpoint.
@@ -23,9 +28,9 @@ defmodule ApolloIo.PeopleEnrichment do
   ref: https://apolloio.github.io/apollo-api-docs/?shell#people-enrichment
   """
   @behaviour PostBehaviour
-  def post_request(opts) do
+  def post_request(api_key, opts) do
     url = ApolloIo.Config.version() <> @people_match_url
-    opts = Map.merge(%{api_key: ApolloIo.Config.api_key()}, opts)
+    opts = Map.merge(%{api_key: api_key}, opts)
 
     case ApolloIo.Config.new_request() |> Req.post!(url: url, json: opts) do
       %Req.Response{body: body, status: 200} -> {:ok, body}

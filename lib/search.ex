@@ -5,22 +5,26 @@ defmodule ApolloIo.Search do
   alias ApolloIo.PostBehaviour
 
   @search_url "/mixed_people/search"
-  @service Confex.get_env(:apollo_io, :search_client)
+  @service (if Mix.env() == :test do
+              ApolloIo.SearchMock
+            else
+              ApolloIo.Search
+            end)
 
   @doc """
   Query the endpoint.
   Options parameters are passed as a map.
-  person_titles (options) - list os titles
-  q_organization_domains (optional) - list of domains
-  page (optional) - integer
+  - person_titles (options) - list os titles
+  - q_organization_domains (optional) - list of domains
+  - page (optional) - integer
   ref: https://apolloio.github.io/apollo-api-docs/?shell#search
   """
-  def search(opts), do: @service.post_request(opts)
+  def search(api_key, opts), do: @service.post_request(api_key, opts)
 
   @behaviour PostBehaviour
-  def post_request(opts) do
+  def post_request(api_key, opts) do
     url = ApolloIo.Config.version() <> @search_url
-    opts = Map.merge(%{api_key: ApolloIo.Config.api_key()}, opts)
+    opts = Map.merge(%{api_key: api_key}, opts)
 
     case ApolloIo.Config.new_request() |> Req.post!(url: url, json: opts) do
       %Req.Response{body: body, status: 200} -> {:ok, body}

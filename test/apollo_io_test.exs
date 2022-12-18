@@ -8,25 +8,25 @@ defmodule ApolloIoTest do
   describe "endpoints" do
     test "organization enrich" do
       ApolloIo.OrganizationEnrichmentMock
-      |> expect(:post_request, fn _domain -> organization() end)
+      |> expect(:post_request, fn _api_key, _domain -> organization() end)
 
-      assert ApolloIo.organization_enrich("patagonia.com") ==
+      assert ApolloIo.organization_enrich("api_key", "patagonia.com") ==
                organization()
     end
 
     test "people enrich" do
       ApolloIo.PeopleEnrichmentMock
-      |> expect(:post_request, fn _map -> people() end)
+      |> expect(:post_request, fn _api_key, _map -> people() end)
 
-      assert ApolloIo.people_enrich(%{first_name: "James", last_name: "Cameroon"}) ==
+      assert ApolloIo.people_enrich("api_key", %{first_name: "James", last_name: "Cameroon"}) ==
                people()
     end
 
     test "search" do
       ApolloIo.SearchMock
-      |> expect(:post_request, fn _map -> search() end)
+      |> expect(:post_request, fn _api_key, _map -> search() end)
 
-      assert ApolloIo.search(%{
+      assert ApolloIo.search("api_key", %{
                person_titles: ["sales director", "engineer manager"],
                q_organization_domains: "google.com\nfacebook.com",
                page: 1

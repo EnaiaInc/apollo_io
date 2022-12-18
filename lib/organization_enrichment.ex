@@ -5,7 +5,11 @@ defmodule ApolloIo.OrganizationEnrichment do
   alias ApolloIo.PostBehaviour
 
   @organization_match_url "/organizations/enrich"
-  @service Confex.get_env(:apollo_io, :organization_client)
+  @service (if Mix.env() == :test do
+              ApolloIo.OrganizationEnrichmentMock
+            else
+              ApolloIo.OrganizationEnrichment
+            end)
 
   @doc """
   Query the endpoint.
@@ -13,12 +17,12 @@ defmodule ApolloIo.OrganizationEnrichment do
   - domain
   ref: https://apolloio.github.io/apollo-api-docs/?shell#organization-enrichment
   """
-  def organization_enrich(domain), do: @service.post_request(domain)
+  def organization_enrich(api_key, domain), do: @service.post_request(api_key, domain)
 
   @behaviour PostBehaviour
-  def post_request(domain) do
+  def post_request(api_key, domain) do
     url = ApolloIo.Config.version() <> @organization_match_url
-    opts = Map.merge(%{api_key: ApolloIo.Config.api_key()}, %{domain: domain})
+    opts = Map.merge(%{api_key: api_key}, %{domain: domain})
 
     case ApolloIo.Config.new_request() |> Req.post!(url: url, json: opts) do
       %Req.Response{body: body, status: 200} -> {:ok, body}
