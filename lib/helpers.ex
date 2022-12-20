@@ -2,6 +2,8 @@ defmodule ApolloIo.Helpers do
   @moduledoc """
   Helpers
   """
+  def map_to_struct(nil, _), do: nil
+
   def map_to_struct(map, module) do
     processed_map =
       Map.keys(module.__struct__)

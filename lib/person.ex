@@ -84,7 +84,7 @@ defmodule ApolloIo.Person do
 
   defp cast_to_struct(body) do
     Helpers.map_to_struct(body["person"], __MODULE__)
-    |> Map.update!(:contact, &Helpers.map_to_struct(&1, Contact))
-    |> Map.update!(:organization, &Helpers.map_to_struct(&1, Organization))
+    |> Map.update(:contact, nil, &Helpers.map_to_struct(&1, Contact))
+    |> Map.update(:organization, nil, &Helpers.map_to_struct(&1, Organization))
   end
 end

@@ -33,7 +33,7 @@ defmodule ApolloIo.Search do
   - page (optional) - integer
   ref: https://apolloio.github.io/apollo-api-docs/?shell#search
   """
-  @spec search(map())::{:ok, SearchResult.t()} | {:error, map()}
+  @spec search(map()) :: {:ok, SearchResult.t()} | {:error, map()}
   def search(opts) do
     opts = opts |> Enum.into(%{})
 
