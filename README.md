@@ -1,7 +1,5 @@
 # ApolloIo
 
-**TODO: Add description**
-
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
@@ -15,14 +13,21 @@ def deps do
 end
 ```
 
+## Configuration
+The API key can be added to the config as follows in the `config.exs` or `runtime.exs`:
+```elixir
+config :apollo_io,
+  api_key: <YOUR_API_KEY>
+```
+
 ## Usage
 No additional configuration is needed.
 Pass your api_key on every request:
 
 ```elixir
-AppoloIo.people_enrich("you_api_key", %{email: "email@domain.com"})
-AppoloIo.organization_enrich("you_api_key", "some.domain.com")
-AppoloIo.search("you_api_key", %{person_titles: ["sales director"]})
+ApolloIo.people_enrich(email: "email@domain.com")
+ApolloIo.organization_enrich("some.domain.com")
+ApolloIo.search(person_titles: ["sales director"])
 ```
 
 Supported params for `people_enrich` are:
