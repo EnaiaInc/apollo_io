@@ -10,28 +10,24 @@ defmodule ApolloIo do
 
   The enrich endpoint charges credits even if the person is already in your CRM. The enrich endpoint also charges credits if you pass in the same information multiple times.
 
-  usage:
-  ApolloIo.people_enrich(%{first_name: "James", last_name: "Cameroon"}) ==
+  ## Examples
+      iex> ApolloIo.people_enrich([first_name: "James", last_name: "Cameroon"])
   """
-  defdelegate people_enrich(api_key, opts), to: ApolloIo.PeopleEnrichment
+  defdelegate people_enrich(opts), to: ApolloIo.Person
 
   @doc """
   This endpoint enriches a company with info such as industry, company size, etc. based on the domain parameter passed in.
 
-  usage:
-  ApolloIo.organization_enrich("patagonia.com") ==
+  ## Examples
+      iex> ApolloIo.organization_enrich("patagonia.com")
   """
-  defdelegate organization_enrich(api_key, domain), to: ApolloIo.OrganizationEnrichment
+  defdelegate organization_enrich(domain), to: ApolloIo.Organization
 
   @doc """
   This endpoint searches for people. Calls to the search endpoint do not cost you credits. They also do not return any email information. To get email information, use the "enrich" endpoint.
 
-  usage:
-  ApolloIo.search(%{
-               person_titles: ["sales director", "engineer manager"],
-               q_organization_domains: "google.com\nfacebook.com",
-               page: 1
-             })
+  ## Examples
+      iex> ApolloIo.search([person_titles: ["sales director", "engineer manager"], q_organization_domains: "google.com\nfacebook.com", page: 1])
   """
-  defdelegate search(api_key, opts), to: ApolloIo.Search
+  defdelegate search(opts), to: ApolloIo.Search
 end

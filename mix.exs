@@ -15,17 +15,15 @@ defmodule ApolloIo.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :confex]
+      extra_applications: [:logger]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:confex, "~> 3.5"},
-      {:dotenv, "~> 3.1"},
-      {:mox, "~> 1.0"},
-      {:req, "~> 0.3.3"}
+      {:bypass, "~> 2.1.0"},
+      {:req, "~> 0.3.0"}
     ]
   end
 

@@ -2,14 +2,28 @@ defmodule ApolloIo.Search do
   @moduledoc """
   Documentation for `ApolloIo.Search`.
   """
-  alias ApolloIo.PostBehaviour
+  alias ApolloIo.{Contact, Person, Request, Helpers}
+
+  defmodule SearchResult do
+    @type t :: %__MODULE__{
+            breadcrumbs: list,
+            partial_results_only: boolean,
+            partial_results_limit: integer,
+            pagination: map,
+            contacts: :list,
+            people: :list
+          }
+    defstruct [
+      :breadcrumbs,
+      :partial_results_only,
+      :partial_results_limit,
+      :pagination,
+      :contacts,
+      :people
+    ]
+  end
 
   @search_url "/mixed_people/search"
-  @service (if Mix.env() == :test do
-              ApolloIo.SearchMock
-            else
-              ApolloIo.Search
-            end)
 
   @doc """
   Query the endpoint.
@@ -19,16 +33,27 @@ defmodule ApolloIo.Search do
   - page (optional) - integer
   ref: https://apolloio.github.io/apollo-api-docs/?shell#search
   """
-  def search(api_key, opts), do: @service.post_request(api_key, opts)
+  @spec search(map())::{:ok, SearchResult.t()} | {:error, map()}
+  def search(opts) do
+    opts = opts |> Enum.into(%{})
 
-  @behaviour PostBehaviour
-  def post_request(api_key, opts) do
-    url = ApolloIo.Config.version() <> @search_url
-    opts = Map.merge(%{api_key: api_key}, opts)
+    case Request.post(@search_url, opts) do
+      {:ok, body} ->
+        {:ok, cast_to_struct(body)}
 
-    case ApolloIo.Config.new_request() |> Req.post!(url: url, json: opts) do
-      %Req.Response{body: body, status: 200} -> {:ok, body}
-      %Req.Response{body: body, status: _error} -> {:error, body}
+      {:error, body} ->
+        {:error, body}
     end
+  end
+
+  defp cast_to_struct(body) do
+    body
+    |> Helpers.map_to_struct(SearchResult)
+    |> Map.update(:contacts, nil, fn contacts ->
+      Enum.map(contacts, &Helpers.map_to_struct(&1, Contact))
+    end)
+    |> Map.update(:people, nil, fn people ->
+      Enum.map(people, &Helpers.map_to_struct(&1, Person))
+    end)
   end
 end
