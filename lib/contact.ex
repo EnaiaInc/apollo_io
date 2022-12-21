@@ -52,6 +52,8 @@ defmodule ApolloIo.Contact do
           phone_numbers: list,
           account_phone_note: String.t() | nil
         }
+
+  @derive Jason.Encoder
   defstruct [
     :id,
     :first_name,

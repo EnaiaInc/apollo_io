@@ -47,6 +47,8 @@ defmodule ApolloIo.Organization do
           account_id: String.t(),
           account: Account.t()
         }
+
+  @derive Jason.Encoder
   defstruct [
     :id,
     :name,
@@ -116,7 +118,10 @@ defmodule ApolloIo.Organization do
   end
 
   defp cast_to_struct(body) do
+    IO.inspect(body)
+
     Helpers.map_to_struct(body["organization"], __MODULE__)
-    |> Map.update(:account, nil, &Helpers.map_to_struct(&1, Account))
+    |> IO.inspect()
+    |> Map.update!(:account, &Helpers.map_to_struct(&1, Account))
   end
 end

@@ -19,8 +19,14 @@ defmodule ApolloIo.Request do
     Req.new(base_url: @base_url)
     |> Req.post!(url: url, json: opts)
     |> case do
-      %Req.Response{body: body, status: 200} -> {:ok, body}
-      %Req.Response{body: body, status: _error} -> {:error, body}
+      %Req.Response{body: body, status: 200} when body == %{} ->
+        {:error, %ApolloIo.Error{message: "Not found"}}
+
+      %Req.Response{body: body, status: 200} ->
+        {:ok, body}
+
+      %Req.Response{body: body, status: _error} ->
+        {:error, body}
     end
   end
 
@@ -35,8 +41,14 @@ defmodule ApolloIo.Request do
     Req.new(base_url: @base_url)
     |> Req.get!(url: url, params: opts)
     |> case do
-      %Req.Response{body: body, status: 200} -> {:ok, body}
-      %Req.Response{body: body, status: _error} -> {:error, body}
+      %Req.Response{body: body, status: 200} when body == %{} ->
+        {:error, %ApolloIo.Error{message: "Not found"}}
+
+      %Req.Response{body: body, status: 200} ->
+        {:ok, body}
+
+      %Req.Response{body: body, status: _error} ->
+        {:error, body}
     end
   end
 

@@ -26,6 +26,7 @@ defmodule ApolloIo.Account do
           persona_counts: map
         }
 
+  @derive Jason.Encoder
   defstruct [
     :id,
     :domain,
