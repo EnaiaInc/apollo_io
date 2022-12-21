@@ -3,7 +3,7 @@ defmodule ApolloIo.Organization do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          name: String.t(),
+          name: String.t() | nil,
           website_url: String.t(),
           blog_url: String.t() | nil,
           angellist_url: String.t() | nil,

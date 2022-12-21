@@ -1,7 +1,7 @@
 defmodule ApolloIo.Account do
   @type t :: %__MODULE__{
           id: String.t(),
-          domain: Sting.t(),
+          domain: String.t(),
           name: String.t(),
           team_id: String.t(),
           organization_id: String.t(),

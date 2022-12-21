@@ -69,7 +69,7 @@ defmodule ApolloIo.Person do
   - id (optional)
   ref: https://apolloio.github.io/apollo-api-docs/?shell#people-enrichment
   """
-  @spec people_enrich(map()) :: {:ok, __MODULE__.t()} | {:error, map()}
+  @spec people_enrich(keyword()) :: {:ok, __MODULE__.t()} | {:error, map()}
   def people_enrich(opts) do
     opts = opts |> Enum.into(%{})
 
