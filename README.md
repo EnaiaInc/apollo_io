@@ -1,4 +1,4 @@
-# ApolloIo
+# Apollo.io client library
 
 ## Installation
 
