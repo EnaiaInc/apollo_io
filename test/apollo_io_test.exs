@@ -2,6 +2,15 @@ defmodule ApolloIoTest do
   use ExUnit.Case
   alias ApolloIo.{Organization, Person}
   alias ApolloIo.Search.SearchResult
+  import ExUnit.CaptureLog
+  require Logger
+
+  defmodule ApolloIoTest.Mock do
+    def retry_func(_response_or_exception) do
+      Logger.info("retry_func")
+      true
+    end
+  end
 
   setup do
     bypass = Bypass.open(port: 12_345)
@@ -42,6 +51,29 @@ defmodule ApolloIoTest do
                  q_organization_domains: "google.com\nfacebook.com",
                  page: 1
                )
+    end
+
+    test "retry config works", %{bypass: bypass} do
+      Application.put_env(:apollo_io, :retry_function, &ApolloIoTest.Mock.retry_func/1)
+
+      Bypass.expect(bypass, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(
+          429,
+          "The maximum number of api calls allowed for api/v1/organizations/enrich is 100 times per hour. Please upgrade your plan from https://app.apollo.io/#/settings/plans/upgrade"
+        )
+      end)
+
+      {return_value, log} = with_log(fn -> ApolloIo.organization_enrich("patagonia.com") end)
+
+      assert {:error,
+              %{
+                message:
+                  "The maximum number of api calls allowed for api/v1/organizations/enrich is 100 times per hour. Please upgrade your plan from https://app.apollo.io/#/settings/plans/upgrade"
+              }} = return_value
+
+      assert log =~ "retry_func"
     end
   end
 
