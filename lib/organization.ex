@@ -118,10 +118,7 @@ defmodule ApolloIo.Organization do
   end
 
   defp cast_to_struct(body) do
-    IO.inspect(body)
-
     Helpers.map_to_struct(body["organization"], __MODULE__)
-    |> IO.inspect()
     |> Map.update!(:account, &Helpers.map_to_struct(&1, Account))
   end
 end
