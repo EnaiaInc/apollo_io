@@ -19,6 +19,12 @@ defmodule ApolloIo.Helpers do
     struct(module, processed_map)
   end
 
+  def map_list_to_struct(nil, _module), do: []
+
+  def map_list_to_struct(map_list, module) do
+    Enum.map(map_list, &map_to_struct(&1, module))
+  end
+
   defp try_converting_common_value_formats(value) do
     value
     |> maybe_convert_date()

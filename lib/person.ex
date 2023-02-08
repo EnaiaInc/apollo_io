@@ -2,7 +2,7 @@ defmodule ApolloIo.Person do
   @moduledoc """
   Documentation for `ApolloIo.PeopleEnrichment`.
   """
-  alias ApolloIo.{Contact, Helpers, Organization, Request}
+  alias ApolloIo.{Contact, Employment, Helpers, Organization, PhoneNumber, Request}
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -27,7 +27,9 @@ defmodule ApolloIo.Person do
           contact: Contact.t(),
           revealed_for_current_team: boolean,
           organization_id: String.t(),
-          organization: Organization.t()
+          organization: Organization.t(),
+          phone_numbers: [PhoneNumber.t()],
+          employment_history: [Employment.t()]
         }
   defstruct [
     :id,
@@ -52,10 +54,13 @@ defmodule ApolloIo.Person do
     :contact,
     :revealed_for_current_team,
     :organization_id,
-    :organization
+    :organization,
+    :phone_numbers,
+    :employment_history
   ]
 
   @people_match_url "/people/match"
+  @people_bulk_match_url "/people/bulk_match"
 
   @doc """
   Query the endpoint.
@@ -75,16 +80,37 @@ defmodule ApolloIo.Person do
 
     case Request.post(@people_match_url, opts) do
       {:ok, body} ->
-        {:ok, cast_to_struct(body)}
+        {:ok, cast_to_struct(body["person"])}
 
       {:error, body} ->
         {:error, body}
     end
   end
 
-  defp cast_to_struct(body) do
-    Helpers.map_to_struct(body["person"], __MODULE__)
+  defp cast_to_struct(person_map) do
+    Helpers.map_to_struct(person_map, __MODULE__)
     |> Map.update(:contact, nil, &Helpers.map_to_struct(&1, Contact))
     |> Map.update(:organization, nil, &Helpers.map_to_struct(&1, Organization))
+    |> Map.update(:employment_history, [], &Helpers.map_list_to_struct(&1, Employment))
+    |> Map.update(:phone_numbers, [], &Helpers.map_list_to_struct(&1, PhoneNumber))
+  end
+
+  @spec bulk_people_enrich([map()], keyword()) :: {:ok, [__MODULE__.t()]} | {:error, map()}
+  def bulk_people_enrich(list_of_details, opts \\ []) do
+    opts = opts |> Enum.into(%{})
+    opts = Map.put(opts, :details, list_of_details)
+
+    case Request.post(@people_bulk_match_url, opts) do
+      {:ok, body} ->
+        matches =
+          body["matches"]
+          |> Enum.reject(&is_nil/1)
+          |> Enum.map(&cast_to_struct/1)
+
+        {:ok, matches}
+
+      {:error, body} ->
+        {:error, body}
+    end
   end
 end
