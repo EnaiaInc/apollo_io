@@ -16,6 +16,24 @@ defmodule ApolloIo do
   defdelegate people_enrich(opts), to: ApolloIo.Person
 
   @doc """
+  This endpoint enriches people information in bulk - the more information you pass in, the more likely we can find a match.
+
+  Up to 10 records can be enriched at the same time through this endpoint.
+
+  ### Credit Usage
+  The enrich endpoint charges you credits for its usage. If a verified email is successfully returned or the list of personal emails is revealed, it will cost you 1 credit. If an email is not found, but Apollo successfully found ALL of the following information: Name, Linkedin Profile, Current Company Information, Apollo will charge a fraction of a credit. Typically this is 0.01 credit per successful enrichment without email. But it may be higher depending on your specific plan.
+
+  Duplicate enrichments of the same record will not be charged credits.
+
+  ### Rate Limits
+  Rate limits on this endpoint are 1/10th of what is available on the single enrichment endpoint.
+
+  ## Examples
+      iex> ApolloIo.bulk_people_enrich([%{first_name: "James", last_name: "Cameroon"}])
+  """
+  defdelegate bulk_people_enrich(list_of_details, opts \\ []), to: ApolloIo.Person
+
+  @doc """
   This endpoint enriches a company with info such as industry, company size, etc. based on the domain parameter passed in.
 
   ## Examples

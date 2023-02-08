@@ -38,6 +38,16 @@ defmodule ApolloIoTest do
       assert {:ok, %Person{}} = ApolloIo.people_enrich(first_name: "James", last_name: "Cameroon")
     end
 
+    test "bulk people enrich", %{bypass: bypass} do
+      Bypass.expect(bypass, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(200, bulk_people_response())
+      end)
+
+      assert {:ok, [%Person{}]} = ApolloIo.bulk_people_enrich([%{email: "tim@apollo.io"}])
+    end
+
     test "search", %{bypass: bypass} do
       Bypass.expect(bypass, fn conn ->
         conn
@@ -443,6 +453,229 @@ defmodule ApolloIoTest do
           }
       }
   )
+  end
+
+  defp bulk_people_response do
+    ~s<
+      {
+        "credits_consumed": 0.01,
+        "error_code": null,
+        "error_message": null,
+        "matches": [
+          {
+            "city": "San Francisco",
+            "country": "United States",
+            "email": "tim@apollo.io",
+            "email_status": null,
+            "employment_history": [
+              {
+                "_id": "63e3a596873eac00011e110b",
+                "created_at": "2023-02-08T13:37:26.544Z",
+                "current": true,
+                "degree": null,
+                "description": null,
+                "emails": null,
+                "end_date": null,
+                "grade_level": null,
+                "id": "63e3a596873eac00011e110b",
+                "key": "63e3a596873eac00011e110b",
+                "kind": null,
+                "major": null,
+                "organization_id": "5e66b6381e05b4008c8331b8",
+                "organization_name": "Apollo",
+                "raw_address": null,
+                "start_date": "2016-01-01",
+                "title": "Founder & CEO",
+                "updated_at": "2023-02-08T13:37:26.544Z"
+              },
+              {
+                "_id": "63e3a5d4873eac00011e13a5",
+                "created_at": "2023-02-08T13:38:28.745Z",
+                "current": false,
+                "degree": null,
+                "description": null,
+                "emails": null,
+                "end_date": "2015-01-01",
+                "grade_level": null,
+                "id": "63e3a5d4873eac00011e13a5",
+                "key": "63e3a5d4873eac00011e13a5",
+                "kind": null,
+                "major": null,
+                "organization_id": null,
+                "organization_name": "Braingenie",
+                "raw_address": null,
+                "start_date": "2011-01-01",
+                "title": "Founder & CEO",
+                "updated_at": "2023-02-08T13:38:28.745Z"
+              },
+              {
+                "_id": "63e3a5d4873eac00011e13a6",
+                "created_at": "2023-02-08T13:38:28.745Z",
+                "current": false,
+                "degree": null,
+                "description": null,
+                "emails": null,
+                "end_date": "2011-01-01",
+                "grade_level": null,
+                "id": "63e3a5d4873eac00011e13a6",
+                "key": "63e3a5d4873eac00011e13a6",
+                "kind": null,
+                "major": null,
+                "organization_id": "54a22f23746869331840e813",
+                "organization_name": "Citadel Investment Group",
+                "raw_address": null,
+                "start_date": "2011-01-01",
+                "title": "Investment & Trading Associate",
+                "updated_at": "2023-02-08T13:38:28.745Z"
+              },
+              {
+                "_id": "63e3a5d4873eac00011e13a7",
+                "created_at": "2023-02-08T13:38:28.745Z",
+                "current": false,
+                "degree": null,
+                "description": null,
+                "emails": null,
+                "end_date": "2010-09-01",
+                "grade_level": null,
+                "id": "63e3a5d4873eac00011e13a7",
+                "key": "63e3a5d4873eac00011e13a7",
+                "kind": null,
+                "major": null,
+                "organization_id": "54a1216169702d7fe6dfca02",
+                "organization_name": "The Boston Consulting Group",
+                "raw_address": null,
+                "start_date": "2010-08-01",
+                "title": "Summer Associate",
+                "updated_at": "2023-02-08T13:38:28.745Z"
+              },
+              {
+                "_id": "63e3a5d4873eac00011e13a8",
+                "created_at": "2023-02-08T13:38:28.745Z",
+                "current": false,
+                "degree": null,
+                "description": null,
+                "emails": null,
+                "end_date": "2010-08-01",
+                "grade_level": null,
+                "id": "63e3a5d4873eac00011e13a8",
+                "key": "63e3a5d4873eac00011e13a8",
+                "kind": null,
+                "major": null,
+                "organization_id": "5da2e6a3f978a8000177e831",
+                "organization_name": "Goldman Sachs",
+                "raw_address": null,
+                "start_date": "2010-06-01",
+                "title": "Summer Analyst",
+                "updated_at": "2023-02-08T13:38:28.745Z"
+              },
+              {
+                "_id": "63e3a5d4873eac00011e13a9",
+                "created_at": "2023-02-08T13:38:28.745Z",
+                "current": false,
+                "degree": null,
+                "description": null,
+                "emails": null,
+                "end_date": "2010-02-01",
+                "grade_level": null,
+                "id": "63e3a5d4873eac00011e13a9",
+                "key": "63e3a5d4873eac00011e13a9",
+                "kind": null,
+                "major": null,
+                "organization_id": "54a1a06274686945fa1ffc02",
+                "organization_name": "Jane Street",
+                "raw_address": null,
+                "start_date": "2009-12-01",
+                "title": "Trading Intern",
+                "updated_at": "2023-02-08T13:38:28.745Z"
+              }
+            ],
+            "extrapolated_email_confidence": null,
+            "facebook_url": null,
+            "first_name": "Tim",
+            "github_url": null,
+            "headline": "Founder & CEO at Apollo",
+            "id": "63cd663d8cde7800015d3520",
+            "intent_strength": null,
+            "last_name": "Zheng",
+            "linkedin_url": "http://www.linkedin.com/in/tim-zheng-677ba010",
+            "name": "Tim Zheng",
+            "organization": {
+              "alexa_ranking": 3506,
+              "id": "5e66b6381e05b4008c8331b8",
+              "languages": [],
+              "street_address": "301 Howard St",
+              "publicly_traded_symbol": null,
+              "publicly_traded_exchange": null,
+              "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/63dce1c2d502ab0001d29a46/picture",
+              "linkedin_url": "http://www.linkedin.com/company/apolloio",
+              "primary_phone": {
+                "number": "+1(202) 374-1312",
+                "source": "Account"
+              },
+              "founded_year": 2015,
+              "city": "San Francisco",
+              "sanitized_phone": "+12023741312",
+              "industry_tag_id": "5567cd4773696439b10b0000",
+              "twitter_url": "https://twitter.com/meetapollo/",
+              "raw_address": "301 Howard St Ste 830, Suite 830, San Francisco, California, USA, 94105",
+              "postal_code": "94105-2241",
+              "linkedin_uid": "18511550",
+              "crunchbase_url": null,
+              "phone": "+1(202) 374-1312",
+              "facebook_url": "https://www.facebook.com/MeetApollo",
+              "angellist_url": null,
+              "retail_location_count": 0,
+              "blog_url": null,
+              "persona_counts": {},
+              "industry": "information technology & services",
+              "country": "United States",
+              "keywords": [
+                "sales engagement",
+                "lead generation",
+                "predictive analytics",
+                "lead scoring",
+                "sales strategy",
+                "conversation intelligence",
+                "sales enablement",
+                "lead routing",
+                "sales development",
+                "email engagement",
+                "revenue intelligence",
+                "sales operations",
+                "demand generation"
+              ],
+              "name": "Apollo.io",
+              "snippets_loaded": true,
+              "primary_domain": "apollo.io",
+              "state": "California",
+              "estimated_num_employees": 400,
+              "website_url": "http://www.apollo.io"
+            },
+            "organization_id": "5e66b6381e05b4008c8331b8",
+            "phone_numbers": [
+              {
+                "dnc_status": null,
+                "position": 0,
+                "raw_number": "+1(202) 374-1312",
+                "sanitized_number": "+12023741312",
+                "status": "no_status",
+                "type": "work_hq"
+              }
+            ],
+            "photo_url": "https://media.licdn.com/dms/image/C5603AQGiphGg4YXw4Q/profile-displayphoto-shrink_200_200/0/1527618224366?e=1681344000&v=beta&t=sJWO_glEAQGRMEVcKPamz4EDT88FN6dOBPYpARgLaHM",
+            "revealed_for_current_team": true,
+            "show_intent": false,
+            "state": "California",
+            "title": "Founder & CEO",
+            "twitter_url": null
+          }
+        ],
+        "missing_records": 0,
+        "status": "success",
+        "total_requested_enrichments": 1,
+        "unique_enriched_records": 1
+      }
+    >
   end
 
   defp search_response do
