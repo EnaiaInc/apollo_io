@@ -129,7 +129,9 @@ defmodule ApolloIo.Person do
           body
           |> Helpers.map_to_struct(__MODULE__.BulkPeopleEnrichmentResult)
           |> Map.update(:matches, [], fn matches ->
-            Enum.map(matches, &cast_to_struct/1)
+            matches
+            |> Enum.reject(&is_nil/1)
+            |> Enum.map(&cast_to_struct/1)
           end)
 
         {:ok, result}
