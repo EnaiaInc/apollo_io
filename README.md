@@ -1,5 +1,7 @@
 # Apollo.io client library
 
+Elixir client for the [apollo.io API](https://apolloio.github.io/apollo-api-docs/?shell#introduction).
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
