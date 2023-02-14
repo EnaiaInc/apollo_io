@@ -27,13 +27,13 @@ defmodule ApolloIo.Search do
 
   @doc """
   Query the endpoint.
-  Options parameters are passed as a map.
+  Options parameters are passed as a keyword list.
   - person_titles (options) - list os titles
   - q_organization_domains (optional) - list of domains
   - page (optional) - integer
   ref: https://apolloio.github.io/apollo-api-docs/?shell#search
   """
-  @spec search(map()) :: {:ok, SearchResult.t()} | {:error, map()}
+  @spec search(keyword()) :: {:ok, SearchResult.t()} | {:error, map()}
   def search(opts) do
     opts = opts |> Enum.into(%{})
 
