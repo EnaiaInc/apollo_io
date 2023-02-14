@@ -1,6 +1,7 @@
 defmodule ApolloIoTest do
   use ExUnit.Case
   alias ApolloIo.{Organization, Person}
+  alias ApolloIo.Person.BulkPeopleEnrichmentResult
   alias ApolloIo.Search.SearchResult
   import ExUnit.CaptureLog
   require Logger
@@ -45,7 +46,8 @@ defmodule ApolloIoTest do
         |> Plug.Conn.resp(200, bulk_people_response())
       end)
 
-      assert {:ok, [%Person{}]} = ApolloIo.bulk_people_enrich([%{email: "tim@apollo.io"}])
+      assert {:ok, %BulkPeopleEnrichmentResult{matches: [%Person{}]}} =
+               ApolloIo.bulk_people_enrich([%{email: "tim@apollo.io"}])
     end
 
     test "search", %{bypass: bypass} do

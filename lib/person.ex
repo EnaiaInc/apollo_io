@@ -59,6 +59,29 @@ defmodule ApolloIo.Person do
     :employment_history
   ]
 
+  defmodule BulkPeopleEnrichmentResult do
+    @type t :: %__MODULE__{
+            status: String.t(),
+            error_code: integer() | nil,
+            error_message: String.t() | nil,
+            total_requested_enrichments: integer(),
+            unique_enriched_records: integer(),
+            missing_records: integer(),
+            credits_consumed: number(),
+            matches: [ApolloIo.Person]
+          }
+    defstruct [
+      :status,
+      :error_code,
+      :error_message,
+      :total_requested_enrichments,
+      :unique_enriched_records,
+      :missing_records,
+      :credits_consumed,
+      :matches
+    ]
+  end
+
   @people_match_url "/people/match"
   @people_bulk_match_url "/people/bulk_match"
 
@@ -102,12 +125,14 @@ defmodule ApolloIo.Person do
 
     case Request.post(@people_bulk_match_url, opts) do
       {:ok, body} ->
-        matches =
-          body["matches"]
-          |> Enum.reject(&is_nil/1)
-          |> Enum.map(&cast_to_struct/1)
+        result =
+          body
+          |> Helpers.map_to_struct(__MODULE__.BulkPeopleEnrichmentResult)
+          |> Map.update(:matches, [], fn matches ->
+            Enum.map(matches, &cast_to_struct/1)
+          end)
 
-        {:ok, matches}
+        {:ok, result}
 
       {:error, body} ->
         {:error, body}
