@@ -110,7 +110,7 @@ defmodule ApolloIo.Person do
     end
   end
 
-  defp cast_to_struct(person_map) do
+  def cast_to_struct(person_map) do
     Helpers.map_to_struct(person_map, __MODULE__)
     |> Map.update(:contact, nil, &Helpers.map_to_struct(&1, Contact))
     |> Map.update(:organization, nil, &Helpers.map_to_struct(&1, Organization))

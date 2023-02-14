@@ -53,7 +53,7 @@ defmodule ApolloIo.Search do
       Enum.map(contacts, &Helpers.map_to_struct(&1, Contact))
     end)
     |> Map.update(:people, nil, fn people ->
-      Enum.map(people, &Helpers.map_to_struct(&1, Person))
+      Enum.map(people, &Person.cast_to_struct/1)
     end)
   end
 end
