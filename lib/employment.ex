@@ -21,6 +21,7 @@ defmodule ApolloIo.Employment do
           created_at: DateTime.t(),
           updated_at: DateTime.t()
         }
+  @derive Jason.Encoder
   defstruct [
     :id,
     :organization_id,
