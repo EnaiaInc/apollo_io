@@ -13,6 +13,7 @@ defmodule ApolloIo.Search do
             contacts: :list,
             people: :list
           }
+    @derive Jason.Encoder
     defstruct [
       :breadcrumbs,
       :partial_results_only,

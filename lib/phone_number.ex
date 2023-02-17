@@ -8,6 +8,7 @@ defmodule ApolloIo.PhoneNumber do
           status: String.t()
         }
 
+  @derive Jason.Encoder
   defstruct [
     :sanitized_number,
     :raw_number,
