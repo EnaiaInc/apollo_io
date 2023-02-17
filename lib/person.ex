@@ -31,6 +31,7 @@ defmodule ApolloIo.Person do
           phone_numbers: [PhoneNumber.t()],
           employment_history: [Employment.t()]
         }
+  @derive Jason.Encoder
   defstruct [
     :id,
     :first_name,
