@@ -29,7 +29,8 @@ defmodule ApolloIo.Search do
   @doc """
   Query the endpoint.
   Options parameters are passed as a keyword list.
-  - person_titles (options) - list os titles
+  - person_titles (optional) - list of titles
+  - person_past_organization_ids (optional) - list of organization ids
   - q_organization_domains (optional) - list of domains
   - page (optional) - integer
   ref: https://apolloio.github.io/apollo-api-docs/?shell#search
