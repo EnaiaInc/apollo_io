@@ -43,6 +43,7 @@ defmodule ApolloIo do
 
   @doc """
   This endpoint searches for people. Calls to the search endpoint do not cost you credits. They also do not return any email information. To get email information, use the "enrich" endpoint.
+  This function support pagination by passing `page: page_number` to the list of parameters.
 
   ## Examples
       iex> ApolloIo.search([person_titles: ["sales director", "engineer manager"], q_organization_domains: "google.com\nfacebook.com", page: 1])
