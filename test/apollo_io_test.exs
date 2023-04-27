@@ -1,6 +1,6 @@
 defmodule ApolloIoTest do
   use ExUnit.Case
-  alias ApolloIo.{Organization, Person}
+  alias ApolloIo.{Organization, Person, RateLimit}
   alias ApolloIo.Person.BulkPeopleEnrichmentResult
   alias ApolloIo.Search.SearchResult
   import ExUnit.CaptureLog
@@ -26,7 +26,8 @@ defmodule ApolloIoTest do
         |> Plug.Conn.resp(200, organization_response())
       end)
 
-      assert {:ok, %Organization{}} = ApolloIo.organization_enrich("patagonia.com")
+      assert {:ok, %Organization{}, %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
+               ApolloIo.organization_enrich("patagonia.com")
     end
 
     test "people enrich", %{bypass: bypass} do
@@ -36,7 +37,8 @@ defmodule ApolloIoTest do
         |> Plug.Conn.resp(200, people_response())
       end)
 
-      assert {:ok, %Person{}} = ApolloIo.people_enrich(first_name: "James", last_name: "Cameroon")
+      assert {:ok, %Person{}, %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
+               ApolloIo.people_enrich(first_name: "James", last_name: "Cameroon")
     end
 
     test "bulk people enrich", %{bypass: bypass} do
@@ -46,7 +48,8 @@ defmodule ApolloIoTest do
         |> Plug.Conn.resp(200, bulk_people_response())
       end)
 
-      assert {:ok, %BulkPeopleEnrichmentResult{matches: [%Person{}]}} =
+      assert {:ok, %BulkPeopleEnrichmentResult{matches: [%Person{}]},
+              %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
                ApolloIo.bulk_people_enrich([%{email: "tim@apollo.io"}])
     end
 
@@ -57,7 +60,7 @@ defmodule ApolloIoTest do
         |> Plug.Conn.resp(200, search_response())
       end)
 
-      assert {:ok, %SearchResult{}} =
+      assert {:ok, %SearchResult{}, %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
                ApolloIo.search(
                  person_titles: ["sales director", "engineer manager"],
                  q_organization_domains: "google.com\nfacebook.com",

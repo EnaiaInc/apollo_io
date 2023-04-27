@@ -1,5 +1,5 @@
 defmodule ApolloIo.Organization do
-  alias ApolloIo.{Account, Helpers, Request}
+  alias ApolloIo.{Account, Helpers, RateLimit, Request}
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -104,13 +104,13 @@ defmodule ApolloIo.Organization do
   - domain
   ref: https://apolloio.github.io/apollo-api-docs/?shell#organization-enrichment
   """
-  @spec organization_enrich(String.t()) :: {:ok, __MODULE__.t()} | {:error, map()}
+  @spec organization_enrich(String.t()) :: {:ok, __MODULE__.t(), RateLimit.t()} | {:error, map()}
   def organization_enrich(domain) do
     opts = %{domain: domain}
 
     case Request.get(@organization_match_url, opts) do
-      {:ok, body} ->
-        {:ok, cast_to_struct(body)}
+      {:ok, body, headers} ->
+        {:ok, cast_to_struct(body), Helpers.parse_headers(headers)}
 
       {:error, body} ->
         {:error, body}
