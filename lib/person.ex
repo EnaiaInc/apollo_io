@@ -2,7 +2,7 @@ defmodule ApolloIo.Person do
   @moduledoc """
   Documentation for `ApolloIo.PeopleEnrichment`.
   """
-  alias ApolloIo.{Contact, Employment, Helpers, Organization, PhoneNumber, Request}
+  alias ApolloIo.{Contact, Employment, Helpers, Organization, PhoneNumber, RateLimit, Request}
 
   @type t :: %__MODULE__{
           id: String.t(),
@@ -98,13 +98,13 @@ defmodule ApolloIo.Person do
   - id (optional)
   ref: https://apolloio.github.io/apollo-api-docs/?shell#people-enrichment
   """
-  @spec people_enrich(keyword()) :: {:ok, __MODULE__.t()} | {:error, map()}
+  @spec people_enrich(keyword()) :: {:ok, __MODULE__.t(), RateLimit.t()} | {:error, map()}
   def people_enrich(opts) do
     opts = opts |> Enum.into(%{})
 
     case Request.post(@people_match_url, opts) do
-      {:ok, body} ->
-        {:ok, cast_to_struct(body["person"])}
+      {:ok, body, headers} ->
+        {:ok, cast_to_struct(body["person"]), Helpers.parse_headers(headers)}
 
       {:error, body} ->
         {:error, body}
@@ -119,13 +119,14 @@ defmodule ApolloIo.Person do
     |> Map.update(:phone_numbers, [], &Helpers.map_list_to_struct(&1, PhoneNumber))
   end
 
-  @spec bulk_people_enrich([map()], keyword()) :: {:ok, [__MODULE__.t()]} | {:error, map()}
+  @spec bulk_people_enrich([map()], keyword()) ::
+          {:ok, [__MODULE__.t()], RateLimit.t()} | {:error, map()}
   def bulk_people_enrich(list_of_details, opts \\ []) do
     opts = opts |> Enum.into(%{})
     opts = Map.put(opts, :details, list_of_details)
 
     case Request.post(@people_bulk_match_url, opts) do
-      {:ok, body} ->
+      {:ok, body, headers} ->
         result =
           body
           |> Helpers.map_to_struct(__MODULE__.BulkPeopleEnrichmentResult)
@@ -135,7 +136,7 @@ defmodule ApolloIo.Person do
             |> Enum.map(&cast_to_struct/1)
           end)
 
-        {:ok, result}
+        {:ok, result, Helpers.parse_headers(headers)}
 
       {:error, body} ->
         {:error, body}

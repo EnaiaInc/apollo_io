@@ -2,6 +2,59 @@ defmodule ApolloIo.Helpers do
   @moduledoc """
   Helpers
   """
+
+  alias ApolloIo.RateLimit
+
+  @minute_values [
+    "x-minute-usage",
+    "x-rate-limit-minute",
+    "x-minute-requests-left"
+  ]
+  @hourly_values [
+    "x-hourly-usage",
+    "x-hourly-requests-left",
+    "x-rate-limit-hourly"
+  ]
+  @daily_values [
+    "x-24-hour-usage",
+    "x-24-hour-requests-left",
+    "x-rate-limit-24-hour"
+  ]
+
+  def parse_headers(headers) do
+    minute_map = fetch_minute_map(headers)
+    hourly_map = fetch_hourly_map(headers)
+    daily_map = fetch_daily_map(headers)
+
+    RateLimit.new(minute: minute_map, hourly: hourly_map, daily: daily_map)
+  end
+
+  defp fetch_minute_map(headers) do
+    Enum.reduce(headers, %{}, fn {k, v}, acc ->
+      if k in @minute_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
+    end)
+  end
+
+  defp fetch_hourly_map(headers) do
+    Enum.reduce(headers, %{}, fn {k, v}, acc ->
+      if k in @hourly_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
+    end)
+  end
+
+  defp fetch_daily_map(headers) do
+    Enum.reduce(headers, %{}, fn {k, v}, acc ->
+      if k in @daily_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
+    end)
+  end
+
+  defp parse_key(key) do
+    cond do
+      String.contains?(key, "usage") -> :usage
+      String.contains?(key, "left") -> :requests_left
+      true -> :limit
+    end
+  end
+
   def map_to_struct(nil, _), do: nil
 
   def map_to_struct(map, module) do

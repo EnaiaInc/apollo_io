@@ -2,7 +2,7 @@ defmodule ApolloIo.Search do
   @moduledoc """
   Documentation for `ApolloIo.Search`.
   """
-  alias ApolloIo.{Contact, Person, Request, Helpers}
+  alias ApolloIo.{Contact, Helpers, Person, RateLimit, Request}
 
   defmodule SearchResult do
     @type t :: %__MODULE__{
@@ -35,13 +35,13 @@ defmodule ApolloIo.Search do
   - page (optional) - integer
   ref: https://apolloio.github.io/apollo-api-docs/?shell#search
   """
-  @spec search(keyword()) :: {:ok, SearchResult.t()} | {:error, map()}
+  @spec search(keyword()) :: {:ok, SearchResult.t(), RateLimit.t()} | {:error, map()}
   def search(opts) do
     opts = opts |> Enum.into(%{})
 
     case Request.post(@search_url, opts) do
-      {:ok, body} ->
-        {:ok, cast_to_struct(body)}
+      {:ok, body, headers} ->
+        {:ok, cast_to_struct(body), Helpers.parse_headers(headers)}
 
       {:error, body} ->
         {:error, body}

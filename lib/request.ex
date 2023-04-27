@@ -22,8 +22,8 @@ defmodule ApolloIo.Request do
       %Req.Response{body: body, status: 200} when body == %{} ->
         {:error, %ApolloIo.Error{message: "Not found"}}
 
-      %Req.Response{body: body, status: 200} ->
-        {:ok, body}
+      %Req.Response{body: body, status: 200, headers: headers} ->
+        {:ok, body, headers}
 
       %Req.Response{body: body, status: _error} ->
         {:error, body}
@@ -45,8 +45,8 @@ defmodule ApolloIo.Request do
       %Req.Response{body: body, status: 200} when body == %{} ->
         {:error, %ApolloIo.Error{message: "Not found"}}
 
-      %Req.Response{body: body, status: 200} ->
-        {:ok, body}
+      %Req.Response{body: body, status: 200, headers: headers} ->
+        {:ok, body, headers}
 
       %Req.Response{body: body, status: _error} ->
         {:error, %ApolloIo.Error{message: body}}
