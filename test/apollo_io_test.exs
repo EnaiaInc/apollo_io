@@ -83,12 +83,33 @@ defmodule ApolloIoTest do
       {return_value, log} = with_log(fn -> ApolloIo.organization_enrich("patagonia.com") end)
 
       assert {:error,
-              %{
+              %ApolloIo.Error{
                 message:
                   "The maximum number of api calls allowed for api/v1/organizations/enrich is 100 times per hour. Please upgrade your plan from https://app.apollo.io/#/settings/plans/upgrade"
               }} = return_value
 
       assert log =~ "retry_func"
+    end
+
+    test "if error response does not raise exceptions", %{bypass: bypass} do
+      Application.put_env(:apollo_io, :retry_function, &ApolloIoTest.Mock.retry_func/1)
+
+      Bypass.expect(bypass, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(
+          429,
+          "The maximum number of api calls allowed for api/v1/organizations/enrich is 100 times per hour. Please upgrade your plan from https://app.apollo.io/#/settings/plans/upgrade"
+        )
+      end)
+
+      return_value = ApolloIo.search(q_person_name: "Foo")
+
+      assert {:error,
+              %ApolloIo.Error{
+                message:
+                  "The maximum number of api calls allowed for api/v1/organizations/enrich is 100 times per hour. Please upgrade your plan from https://app.apollo.io/#/settings/plans/upgrade"
+              }} = return_value
     end
   end
 
