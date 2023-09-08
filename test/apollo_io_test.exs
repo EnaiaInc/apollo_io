@@ -27,6 +27,9 @@ defmodule ApolloIoTest do
       end)
 
       assert {:ok, %Organization{}, %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
+               ApolloIo.organization_enrich(domain: "patagonia.com")
+
+      assert {:ok, %Organization{}, %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
                ApolloIo.organization_enrich("patagonia.com")
     end
 
@@ -80,7 +83,8 @@ defmodule ApolloIoTest do
         )
       end)
 
-      {return_value, log} = with_log(fn -> ApolloIo.organization_enrich("patagonia.com") end)
+      {return_value, log} =
+        with_log(fn -> ApolloIo.organization_enrich(domain: "patagonia.com") end)
 
       assert {:error,
               %ApolloIo.Error{
