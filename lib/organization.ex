@@ -100,13 +100,20 @@ defmodule ApolloIo.Organization do
 
   @doc """
   Query the endpoint.
-  Required parameter is passed as a string.
-  - domain
+  Accepted values:
+  - domain (required)
   ref: https://apolloio.github.io/apollo-api-docs/?shell#organization-enrichment
+
+  Calling this function with a string is supported but discouraged.
   """
-  @spec organization_enrich(String.t()) :: {:ok, __MODULE__.t(), RateLimit.t()} | {:error, map()}
-  def organization_enrich(domain) do
-    opts = %{domain: domain}
+  @spec organization_enrich(Keyword.t() | String.t()) ::
+          {:ok, __MODULE__.t(), RateLimit.t()} | {:error, map()}
+  def organization_enrich(domain) when is_binary(domain) do
+    organization_enrich(domain: domain)
+  end
+
+  def organization_enrich(opts) do
+    opts = opts |> Enum.into(%{})
 
     case Request.get(@organization_match_url, opts) do
       {:ok, body, headers} ->

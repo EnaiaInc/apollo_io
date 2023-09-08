@@ -37,9 +37,9 @@ defmodule ApolloIo do
   This endpoint enriches a company with info such as industry, company size, etc. based on the domain parameter passed in.
 
   ## Examples
-      iex> ApolloIo.organization_enrich("patagonia.com")
+      iex> ApolloIo.organization_enrich(domain: "patagonia.com")
   """
-  defdelegate organization_enrich(domain), to: ApolloIo.Organization
+  defdelegate organization_enrich(opts), to: ApolloIo.Organization
 
   @doc """
   This endpoint searches for people. Calls to the search endpoint do not cost you credits. They also do not return any email information. To get email information, use the "enrich" endpoint.

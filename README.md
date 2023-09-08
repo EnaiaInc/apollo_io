@@ -31,7 +31,7 @@ Pass your api_key on every request:
 
 ```elixir
 ApolloIo.people_enrich(email: "email@domain.com")
-ApolloIo.organization_enrich("some.domain.com")
+ApolloIo.organization_enrich(domain: "some.domain.com")
 ApolloIo.search(person_titles: ["sales director"])
 ```
 
@@ -47,6 +47,11 @@ Supported params for `people_enrich` are:
 
 Supported params for `organization_enrich` are:
 
-- person_titles (options) - list os titles
+- domain (required)
+
+Supported params for `search` are:
+
+- person_titles (optional) - list of titles
+- person_past_organization_ids (optional) - list of organization ids
 - q_organization_domains (optional) - list of domains
 - page (optional) - integer
