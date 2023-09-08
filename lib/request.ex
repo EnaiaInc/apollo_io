@@ -11,10 +11,7 @@ defmodule ApolloIo.Request do
   def post(url, opts) do
     url = @current_version <> url
 
-    opts =
-      Map.merge(opts, %{
-        api_key: api_key()
-      })
+    opts = Map.put_new_lazy(opts, :api_key, &api_key/0)
 
     Req.new(base_url: @base_url)
     |> Req.post(url: url, json: opts, decode_body: false)
