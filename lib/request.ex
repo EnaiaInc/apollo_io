@@ -34,10 +34,7 @@ defmodule ApolloIo.Request do
   def get(url, opts) do
     url = @current_version <> url
 
-    opts =
-      Map.merge(opts, %{
-        api_key: api_key()
-      })
+    opts = Map.put_new_lazy(opts, :api_key, &api_key/0)
 
     Req.new(base_url: @base_url)
     |> Req.get(url: url, params: opts, retry: retry_function(), decode_body: false)
