@@ -16,19 +16,7 @@ defmodule ApolloIo.Request do
     Req.new(base_url: @base_url)
     |> Req.post(url: url, json: opts, decode_body: false)
     |> decode_body()
-    |> case do
-      {:ok, %Req.Response{body: body, status: 200}} when body == %{} ->
-        {:error, %ApolloIo.Error{message: "Not found"}}
-
-      {:ok, %Req.Response{body: body, status: 200, headers: headers}} ->
-        {:ok, body, headers}
-
-      {:ok, %Req.Response{body: body, status: _error}} ->
-        {:error, %ApolloIo.Error{message: body}}
-
-      error ->
-        error
-    end
+    |> handle_response()
   end
 
   def get(url, opts) do
@@ -39,19 +27,7 @@ defmodule ApolloIo.Request do
     Req.new(base_url: @base_url)
     |> Req.get(url: url, params: opts, retry: retry_function(), decode_body: false)
     |> decode_body()
-    |> case do
-      {:ok, %Req.Response{body: body, status: 200}} when body == %{} ->
-        {:error, %ApolloIo.Error{message: "Not found"}}
-
-      {:ok, %Req.Response{body: body, status: 200, headers: headers}} ->
-        {:ok, body, headers}
-
-      {:ok, %Req.Response{body: body, status: _error}} ->
-        {:error, %ApolloIo.Error{message: body}}
-
-      error ->
-        error
-    end
+    |> handle_response()
   end
 
   defp decode_body({:ok, %Req.Response{status: status} = response})
@@ -60,6 +36,17 @@ defmodule ApolloIo.Request do
   end
 
   defp decode_body(response), do: response
+
+  defp handle_response({:ok, %Req.Response{body: body, status: 200}}) when body == %{},
+    do: {:error, %ApolloIo.Error{message: "Not found"}}
+
+  defp handle_response({:ok, %Req.Response{body: body, status: 200, headers: headers}}),
+    do: {:ok, body, headers}
+
+  defp handle_response({:ok, %Req.Response{body: body, status: _error}}),
+    do: {:error, %ApolloIo.Error{message: body}}
+
+  defp handle_response(error), do: error
 
   @doc """
   Fetch the API key from application configuration
