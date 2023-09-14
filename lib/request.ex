@@ -55,7 +55,7 @@ defmodule ApolloIo.Request do
 
   def retry_function do
     case Application.get_env(:apollo_io, :retry_function) do
-      nil -> :safe
+      nil -> :safe_transient
       function -> function
     end
   end
