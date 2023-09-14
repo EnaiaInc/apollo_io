@@ -7,7 +7,7 @@ defmodule ApolloIoTest do
   require Logger
 
   defmodule ApolloIoTest.Mock do
-    def retry_func(_response_or_exception) do
+    def retry_func(_request, _response_or_exception) do
       Logger.info("retry_func")
       true
     end
@@ -72,7 +72,7 @@ defmodule ApolloIoTest do
     end
 
     test "retry config works", %{bypass: bypass} do
-      Application.put_env(:apollo_io, :retry_function, &ApolloIoTest.Mock.retry_func/1)
+      Application.put_env(:apollo_io, :retry_function, &ApolloIoTest.Mock.retry_func/2)
 
       Bypass.expect(bypass, fn conn ->
         conn
@@ -96,7 +96,7 @@ defmodule ApolloIoTest do
     end
 
     test "if error response does not raise exceptions", %{bypass: bypass} do
-      Application.put_env(:apollo_io, :retry_function, &ApolloIoTest.Mock.retry_func/1)
+      Application.put_env(:apollo_io, :retry_function, &ApolloIoTest.Mock.retry_func/2)
 
       Bypass.expect(bypass, fn conn ->
         conn
