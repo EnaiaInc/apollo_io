@@ -30,19 +30,19 @@ defmodule ApolloIo.Helpers do
   end
 
   defp fetch_minute_map(headers) do
-    Enum.reduce(headers, %{}, fn {k, v}, acc ->
+    Enum.reduce(headers, %{}, fn {k, [v | _tail]}, acc ->
       if k in @minute_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
     end)
   end
 
   defp fetch_hourly_map(headers) do
-    Enum.reduce(headers, %{}, fn {k, v}, acc ->
+    Enum.reduce(headers, %{}, fn {k, [v | _tail]}, acc ->
       if k in @hourly_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
     end)
   end
 
   defp fetch_daily_map(headers) do
-    Enum.reduce(headers, %{}, fn {k, v}, acc ->
+    Enum.reduce(headers, %{}, fn {k, [v | _tail]}, acc ->
       if k in @daily_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
     end)
   end
