@@ -5,9 +5,14 @@ defmodule ApolloIo.Request do
 
   @base_url ApolloIo.Config.base_url()
   @current_version "/v1"
+
+  @type headers :: %{String.t() => String.t()}
+  @type error :: ApolloIo.Error.t() | Exception.t()
   @doc """
   Create a new request with the base API url.
   """
+  @spec post(String.t(), map()) ::
+          {:ok, body: map(), headers: headers()} | {:error, error()}
   def post(url, opts) do
     url = @current_version <> url
 
@@ -19,6 +24,8 @@ defmodule ApolloIo.Request do
     |> handle_response()
   end
 
+  @spec get(String.t(), map()) ::
+          {:ok, body: map(), headers: headers()} | {:error, error()}
   def get(url, opts) do
     url = @current_version <> url
 
