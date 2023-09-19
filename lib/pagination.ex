@@ -8,6 +8,9 @@ defmodule ApolloIo.Pagination do
           total_pages: non_neg_integer
         }
 
+  @derive Jason.Encoder
+  use ApolloIo.Accessible
+
   defstruct [
     :page,
     :per_page,
