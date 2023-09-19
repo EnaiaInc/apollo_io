@@ -9,6 +9,8 @@ defmodule ApolloIo.PhoneNumber do
         }
 
   @derive Jason.Encoder
+  use ApolloIo.Accessible
+
   defstruct [
     :sanitized_number,
     :raw_number,

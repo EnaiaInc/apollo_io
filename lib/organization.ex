@@ -49,6 +49,8 @@ defmodule ApolloIo.Organization do
         }
 
   @derive Jason.Encoder
+  use ApolloIo.Accessible
+
   defstruct [
     :id,
     :name,

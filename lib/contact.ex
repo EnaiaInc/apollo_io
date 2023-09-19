@@ -54,6 +54,8 @@ defmodule ApolloIo.Contact do
         }
 
   @derive Jason.Encoder
+  use ApolloIo.Accessible
+
   defstruct [
     :id,
     :first_name,
