@@ -63,7 +63,16 @@ defmodule ApolloIoTest do
         |> Plug.Conn.resp(200, search_response())
       end)
 
-      assert {:ok, %SearchResult{}, %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
+      assert {:ok,
+              %SearchResult{
+                pagination: %{
+                  "page" => 1,
+                  "per_page" => 10,
+                  "total_entries" => 1339,
+                  "total_pages" => 134
+                }
+              },
+              %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
                ApolloIo.search(
                  person_titles: ["sales director", "engineer manager"],
                  q_organization_domains: "google.com\nfacebook.com",
