@@ -2,7 +2,7 @@ defmodule ApolloIo.Search do
   @moduledoc """
   Documentation for `ApolloIo.Search`.
   """
-  alias ApolloIo.{Contact, Helpers, Person, RateLimit, Request}
+  alias ApolloIo.{Contact, Helpers, Pagination, Person, RateLimit, Request}
 
   defmodule SearchResult do
     @type t :: %__MODULE__{
@@ -57,5 +57,6 @@ defmodule ApolloIo.Search do
     |> Map.update(:people, nil, fn people ->
       Enum.map(people, &Person.cast_to_struct/1)
     end)
+    |> Map.update(:pagination, nil, &Pagination.cast_to_struct/1)
   end
 end
