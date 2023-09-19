@@ -10,8 +10,8 @@ defmodule ApolloIo.Search do
             partial_results_only: boolean,
             partial_results_limit: integer,
             pagination: map,
-            contacts: :list,
-            people: :list
+            contacts: [Contact.t()],
+            people: [Person.t()]
           }
     @derive Jason.Encoder
     use ApolloIo.Accessible
