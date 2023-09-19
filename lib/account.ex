@@ -27,6 +27,8 @@ defmodule ApolloIo.Account do
         }
 
   @derive Jason.Encoder
+  use ApolloIo.Accessible
+
   defstruct [
     :id,
     :domain,

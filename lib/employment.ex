@@ -22,6 +22,8 @@ defmodule ApolloIo.Employment do
           updated_at: DateTime.t()
         }
   @derive Jason.Encoder
+  use ApolloIo.Accessible
+
   defstruct [
     :id,
     :organization_id,

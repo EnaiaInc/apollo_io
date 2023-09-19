@@ -14,6 +14,8 @@ defmodule ApolloIo.Search do
             people: :list
           }
     @derive Jason.Encoder
+    use ApolloIo.Accessible
+
     defstruct [
       :breadcrumbs,
       :partial_results_only,

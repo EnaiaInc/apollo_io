@@ -4,6 +4,7 @@ defmodule ApolloIo.RateLimit do
   """
   @type t :: %__MODULE__{minute: map, hourly: map, daily: map}
   @derive Jason.Encoder
+  use ApolloIo.Accessible
   defstruct [:minute, :hourly, :daily]
 
   @doc """
