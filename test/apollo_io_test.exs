@@ -66,10 +66,10 @@ defmodule ApolloIoTest do
       assert {:ok,
               %SearchResult{
                 pagination: %{
-                  "page" => 1,
-                  "per_page" => 10,
-                  "total_entries" => 1339,
-                  "total_pages" => 134
+                  page: 1,
+                  per_page: 10,
+                  total_entries: 1339,
+                  total_pages: 134
                 }
               },
               %RateLimit{minute: %{}, hourly: %{}, daily: %{}}} =
