@@ -109,7 +109,7 @@ defmodule ApolloIo.Organization do
   Calling this function with a string is supported but discouraged.
   """
   @spec organization_enrich(Keyword.t() | String.t()) ::
-          {:ok, __MODULE__.t(), RateLimit.t()} | {:error, map()}
+          {:ok, __MODULE__.t(), RateLimit.t()} | {:error, Request.error()}
   def organization_enrich(domain) when is_binary(domain) do
     organization_enrich(domain: domain)
   end
@@ -121,8 +121,8 @@ defmodule ApolloIo.Organization do
       {:ok, body, headers} ->
         {:ok, cast_to_struct(body), Helpers.parse_headers(headers)}
 
-      {:error, body} ->
-        {:error, body}
+      {:error, error} ->
+        {:error, error}
     end
   end
 

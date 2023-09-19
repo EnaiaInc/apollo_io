@@ -100,7 +100,8 @@ defmodule ApolloIo.Person do
   - id (optional)
   ref: https://apolloio.github.io/apollo-api-docs/?shell#people-enrichment
   """
-  @spec people_enrich(keyword()) :: {:ok, __MODULE__.t(), RateLimit.t()} | {:error, map()}
+  @spec people_enrich(keyword()) ::
+          {:ok, __MODULE__.t(), RateLimit.t()} | {:error, Request.error()}
   def people_enrich(opts) do
     opts = opts |> Enum.into(%{})
 
@@ -108,8 +109,8 @@ defmodule ApolloIo.Person do
       {:ok, body, headers} ->
         {:ok, cast_to_struct(body["person"]), Helpers.parse_headers(headers)}
 
-      {:error, body} ->
-        {:error, body}
+      {:error, error} ->
+        {:error, error}
     end
   end
 
@@ -122,7 +123,7 @@ defmodule ApolloIo.Person do
   end
 
   @spec bulk_people_enrich([map()], keyword()) ::
-          {:ok, [__MODULE__.t()], RateLimit.t()} | {:error, map()}
+          {:ok, [__MODULE__.t()], RateLimit.t()} | {:error, Request.error()}
   def bulk_people_enrich(list_of_details, opts \\ []) do
     opts = opts |> Enum.into(%{})
     opts = Map.put(opts, :details, list_of_details)
@@ -140,8 +141,8 @@ defmodule ApolloIo.Person do
 
         {:ok, result, Helpers.parse_headers(headers)}
 
-      {:error, body} ->
-        {:error, body}
+      {:error, error} ->
+        {:error, error}
     end
   end
 end
