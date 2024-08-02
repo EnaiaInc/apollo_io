@@ -2,6 +2,7 @@ defmodule ApolloIo.Request do
   @moduledoc """
   Documentation for `ApolloIo.Config`.
   """
+  alias Req.Request
 
   @base_url ApolloIo.Config.base_url()
   @current_version "/v1"
@@ -16,9 +17,8 @@ defmodule ApolloIo.Request do
   def post(url, opts) do
     url = @current_version <> url
 
-    opts = Map.put_new_lazy(opts, :api_key, &api_key/0)
-
     Req.new(base_url: @base_url)
+    |> Request.put_headers([{"x-api-key", opts[:api_key]}])
     |> Req.post(url: url, json: opts, decode_body: false)
     |> decode_body()
     |> handle_response()
@@ -29,9 +29,8 @@ defmodule ApolloIo.Request do
   def get(url, opts) do
     url = @current_version <> url
 
-    opts = Map.put_new_lazy(opts, :api_key, &api_key/0)
-
     Req.new(base_url: @base_url)
+    |> Request.put_headers([{"x-api-key", opts[:api_key]}])
     |> Req.get(url: url, params: opts, retry: retry_function(), decode_body: false)
     |> decode_body()
     |> handle_response()
@@ -54,11 +53,6 @@ defmodule ApolloIo.Request do
     do: {:error, %ApolloIo.Error{message: body}}
 
   defp handle_response(error), do: error
-
-  @doc """
-  Fetch the API key from application configuration
-  """
-  def api_key, do: Application.get_env(:apollo_io, :api_key)
 
   def retry_function do
     case Application.get_env(:apollo_io, :retry_function) do
