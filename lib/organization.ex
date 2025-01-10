@@ -99,6 +99,7 @@ defmodule ApolloIo.Organization do
   ]
 
   @organization_match_url "/organizations/enrich"
+  @organization_search_url "/mixed_companies/search"
 
   @doc """
   Query the endpoint.
@@ -124,6 +125,11 @@ defmodule ApolloIo.Organization do
       {:error, error} ->
         {:error, error}
     end
+  end
+
+  def organization_search(opts) do
+    opts = opts |> Enum.into(%{})
+    Request.get(@organization_search_url, opts)
   end
 
   defp cast_to_struct(body) do
