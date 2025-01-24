@@ -54,6 +54,7 @@ defmodule ApolloIo.Contact do
         }
 
   @derive Jason.Encoder
+  @derive JSON.Encoder
   use ApolloIo.Accessible
 
   defstruct [

@@ -32,6 +32,7 @@ defmodule ApolloIo.Person do
           employment_history: [Employment.t()]
         }
   @derive Jason.Encoder
+  @derive JSON.Encoder
   use ApolloIo.Accessible
 
   defstruct [
