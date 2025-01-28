@@ -22,6 +22,7 @@ defmodule ApolloIo.Employment do
           updated_at: DateTime.t()
         }
   @derive Jason.Encoder
+  @derive JSON.Encoder
   use ApolloIo.Accessible
 
   defstruct [

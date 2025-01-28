@@ -14,6 +14,7 @@ defmodule ApolloIo.Search do
             people: [Person.t()]
           }
     @derive Jason.Encoder
+    @derive JSON.Encoder
     use ApolloIo.Accessible
 
     defstruct [
