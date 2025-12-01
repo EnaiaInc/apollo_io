@@ -42,6 +42,14 @@ defmodule ApolloIo do
   defdelegate organization_enrich(opts), to: ApolloIo.Organization
 
   @doc """
+  This endpoint searches for organizations.
+
+  ## Examples
+      iex> ApolloIo.organization_search(q_organization_name: "Indiana Center")
+  """
+  defdelegate organization_search(opts), to: ApolloIo.Organization
+
+  @doc """
   This endpoint searches for people. Calls to the search endpoint do not cost you credits. They also do not return any email information. To get email information, use the "enrich" endpoint.
   This function support pagination by passing `page: page_number` to the list of parameters.
 
