@@ -19,7 +19,7 @@ defmodule ApolloIo.Request do
 
     Req.new(base_url: @base_url)
     |> Request.put_headers([{"x-api-key", opts[:api_key]}])
-    |> Req.post(url: url, json: opts, decode_body: false)
+    |> Req.post(url: url, json: opts, retry: :transient, decode_body: false)
     |> decode_body()
     |> handle_response()
   end
