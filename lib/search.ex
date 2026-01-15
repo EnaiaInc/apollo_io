@@ -54,12 +54,12 @@ defmodule ApolloIo.Search do
   defp cast_to_struct(body) do
     body
     |> Helpers.map_to_struct(SearchResult)
-    |> Map.update(:contacts, nil, fn
-      nil -> nil
+    |> Map.update(:contacts, [], fn
+      nil -> []
       contacts -> Enum.map(contacts, &Helpers.map_to_struct(&1, Contact))
     end)
-    |> Map.update(:people, nil, fn
-      nil -> nil
+    |> Map.update(:people, [], fn
+      nil -> []
       people -> Enum.map(people, &Person.cast_to_struct/1)
     end)
     |> Map.update(:pagination, nil, fn
