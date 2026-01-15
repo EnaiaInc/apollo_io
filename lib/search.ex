@@ -27,7 +27,7 @@ defmodule ApolloIo.Search do
     ]
   end
 
-  @search_url "/mixed_people/search"
+  @search_url "/mixed_people/api_search"
 
   @doc """
   Query the endpoint.
@@ -36,7 +36,7 @@ defmodule ApolloIo.Search do
   - person_past_organization_ids (optional) - list of organization ids
   - q_organization_domains (optional) - list of domains
   - page (optional) - integer
-  ref: https://apolloio.github.io/apollo-api-docs/?shell#search
+  ref: https://docs.apollo.io/reference/people-api-search
   """
   @spec search(keyword()) :: {:ok, SearchResult.t(), RateLimit.t()} | {:error, Request.error()}
   def search(opts) do
