@@ -16,9 +16,10 @@ defmodule ApolloIo.Request do
           {:ok, body: map(), headers: headers()} | {:error, error()}
   def post(url, opts) do
     url = @current_version <> url
+    api_key = opts[:api_key] || Application.get_env(:apollo_io, :api_key)
 
     Req.new(base_url: @base_url)
-    |> Request.put_headers([{"x-api-key", opts[:api_key]}])
+    |> Request.put_headers([{"x-api-key", api_key}])
     |> Req.post(url: url, json: opts, retry: :transient, decode_body: false)
     |> decode_body()
     |> handle_response()
@@ -28,9 +29,10 @@ defmodule ApolloIo.Request do
           {:ok, body: map(), headers: headers()} | {:error, error()}
   def get(url, opts) do
     url = @current_version <> url
+    api_key = opts[:api_key] || Application.get_env(:apollo_io, :api_key)
 
     Req.new(base_url: @base_url)
-    |> Request.put_headers([{"x-api-key", opts[:api_key]}])
+    |> Request.put_headers([{"x-api-key", api_key}])
     |> Req.get(url: url, params: opts, retry: retry_function(), decode_body: false)
     |> decode_body()
     |> handle_response()
