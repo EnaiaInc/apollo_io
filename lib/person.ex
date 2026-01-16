@@ -123,7 +123,16 @@ defmodule ApolloIo.Person do
     |> Map.update(:organization, nil, &Helpers.map_to_struct(&1, Organization))
     |> Map.update(:employment_history, [], &Helpers.map_list_to_struct(&1, Employment))
     |> Map.update(:phone_numbers, [], &Helpers.map_list_to_struct(&1, PhoneNumber))
+    |> compute_name_if_missing()
   end
+
+  defp compute_name_if_missing(%__MODULE__{name: nil, first_name: first, last_name: last} = person)
+       when not is_nil(first) or not is_nil(last) do
+    name = [first, last] |> Enum.reject(&is_nil/1) |> Enum.join(" ") |> String.trim()
+    %{person | name: if(name == "", do: nil, else: name)}
+  end
+
+  defp compute_name_if_missing(person), do: person
 
   @spec bulk_people_enrich([map()], keyword()) ::
           {:ok, [__MODULE__.t()], RateLimit.t()} | {:error, Request.error()}
