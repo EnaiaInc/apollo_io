@@ -30,7 +30,12 @@ defmodule ApolloIo.Person do
           organization_id: String.t(),
           organization: Organization.t(),
           phone_numbers: [PhoneNumber.t()],
-          employment_history: [Employment.t()]
+          employment_history: [Employment.t()],
+          has_email: boolean | nil,
+          has_city: boolean | nil,
+          has_state: boolean | nil,
+          has_country: boolean | nil,
+          has_direct_phone: boolean | nil
         }
   @derive Jason.Encoder
   @derive JSON.Encoder
@@ -62,7 +67,12 @@ defmodule ApolloIo.Person do
     :organization_id,
     :organization,
     :phone_numbers,
-    :employment_history
+    :employment_history,
+    :has_email,
+    :has_city,
+    :has_state,
+    :has_country,
+    :has_direct_phone
   ]
 
   defmodule BulkPeopleEnrichmentResult do
