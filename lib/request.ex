@@ -52,9 +52,30 @@ defmodule ApolloIo.Request do
     do: {:ok, body, headers}
 
   defp handle_response({:ok, %Req.Response{body: body, status: _error}}),
-    do: {:error, %ApolloIo.Error{message: body}}
+    do: {:error, %ApolloIo.Error{message: extract_error_message(body)}}
 
   defp handle_response(error), do: error
+
+  # Extract error message from response body, handling both JSON and plain text
+  defp extract_error_message(body) when is_binary(body) do
+    case Jason.decode(body) do
+      {:ok, %{"error" => error}} when is_binary(error) ->
+        error
+
+      {:ok, %{"message" => message}} when is_binary(message) ->
+        message
+
+      {:ok, decoded} when is_map(decoded) ->
+        # If we got valid JSON but no standard error field, return the whole thing as a string
+        Jason.encode!(decoded)
+
+      {:error, _} ->
+        # If JSON decode fails, return the body as-is (it might be plain text)
+        body
+    end
+  end
+
+  defp extract_error_message(body), do: inspect(body)
 
   def retry_function do
     case Application.get_env(:apollo_io, :retry_function) do

@@ -124,6 +124,34 @@ defmodule ApolloIoTest do
                   "The maximum number of api calls allowed for api/v1/organizations/enrich is 100 times per hour. Please upgrade your plan from https://app.apollo.io/#/settings/plans/upgrade"
               }} = return_value
     end
+
+    test "handles JSON error responses by extracting error field", %{bypass: bypass} do
+      Bypass.expect(bypass, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(400, ~s|{"error":"Rate limit exceeded"}|)
+      end)
+
+      return_value = ApolloIo.search(q_person_name: "Foo")
+
+      assert {:error, %ApolloIo.Error{message: message}} = return_value
+      # The error message should be the extracted error text, not the full JSON
+      assert message == "Rate limit exceeded"
+    end
+
+    test "handles malformed JSON in error responses by returning raw body", %{bypass: bypass} do
+      Bypass.expect(bypass, fn conn ->
+        conn
+        |> Plug.Conn.put_resp_header("content-type", "application/json")
+        |> Plug.Conn.resp(500, ~s|{"error":"invalid character: \\"}|)
+      end)
+
+      return_value = ApolloIo.search(q_person_name: "Foo")
+
+      assert {:error, %ApolloIo.Error{message: message}} = return_value
+      # When JSON is malformed, we return the raw body as-is
+      assert message == ~s|{"error":"invalid character: \\"}|
+    end
   end
 
   def organization_response do
