@@ -30,22 +30,58 @@ defmodule ApolloIo.Helpers do
   end
 
   defp fetch_minute_map(headers) do
-    Enum.reduce(headers, %{}, fn {k, [v | _tail]}, acc ->
-      if k in @minute_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
+    default_map = %{usage: nil, limit: nil, requests_left: nil}
+
+    Enum.reduce(headers, default_map, fn {k, [v | _tail]}, acc ->
+      if k in @minute_values do
+        case safe_parse_integer(v) do
+          {:ok, int_value} -> Map.put(acc, parse_key(k), int_value)
+          :error -> acc
+        end
+      else
+        acc
+      end
     end)
   end
 
   defp fetch_hourly_map(headers) do
-    Enum.reduce(headers, %{}, fn {k, [v | _tail]}, acc ->
-      if k in @hourly_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
+    default_map = %{usage: nil, limit: nil, requests_left: nil}
+
+    Enum.reduce(headers, default_map, fn {k, [v | _tail]}, acc ->
+      if k in @hourly_values do
+        case safe_parse_integer(v) do
+          {:ok, int_value} -> Map.put(acc, parse_key(k), int_value)
+          :error -> acc
+        end
+      else
+        acc
+      end
     end)
   end
 
   defp fetch_daily_map(headers) do
-    Enum.reduce(headers, %{}, fn {k, [v | _tail]}, acc ->
-      if k in @daily_values, do: Map.put(acc, parse_key(k), String.to_integer(v)), else: acc
+    default_map = %{usage: nil, limit: nil, requests_left: nil}
+
+    Enum.reduce(headers, default_map, fn {k, [v | _tail]}, acc ->
+      if k in @daily_values do
+        case safe_parse_integer(v) do
+          {:ok, int_value} -> Map.put(acc, parse_key(k), int_value)
+          :error -> acc
+        end
+      else
+        acc
+      end
     end)
   end
+
+  defp safe_parse_integer(value) when is_binary(value) do
+    case Integer.parse(value) do
+      {int, ""} -> {:ok, int}
+      _ -> :error
+    end
+  end
+
+  defp safe_parse_integer(_value), do: :error
 
   defp parse_key(key) do
     cond do
